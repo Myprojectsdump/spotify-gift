@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stage 1 — Unwrap (Uci)</title>
+  <link rel="stylesheet" href="spotify-gift/assets/css/style.css">
+  <script src="spotify-gift/assets/js/common.js" defer></script>
+<!-- improve Android chrome look & install feel -->
+<meta name="theme-color" content="#07102a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="spotify-gift/assets/monk.png"> <!-- optional: add a small favicon -->
+
+
+</head>
+<body>
+  <div class="container" style="display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap">
+    <div class="box-scene" style="flex:1;min-width:320px">
+      <div class="box" id="giftBox" aria-hidden="true">
+        <div class="lid" id="lid">🎶</div>
+        <div class="ribbon-vertical"></div>
+        <div class="ribbon-horiz"></div>
+        <div class="box-body">A bright present for Uci — tap to start</div>
+      </div>
+    </div>
+
+    <div class="controls" style="flex:1;min-width:280px">
+      <div><span class="step-pill">Step 1</span></div>
+      <h2 style="margin:6px 0 0">Unwrap your surprise, <span class="neon-name">Uci</span></h2>
+      <p class="muted">Pull the tab to reveal the vibe selector and sparkles.</p>
+
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <button id="pull" class="btn big">Pull to open ✨</button>
+        <button id="skip" class="btn ghost">Instant surprise</button>
+      </div>
+
+      <div style="margin-top:18px">
+        <button id="next1" class="btn big" style="display:none">Go to Vibes →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const lid = document.getElementById('lid');
+      const pull = document.getElementById('pull');
+      const skip = document.getElementById('skip');
+      const next1 = document.getElementById('next1');
+
+      function openBox(){
+        if(lid.classList.contains('open')) return;
+        lid.classList.add('open');
+        // confetti burst: bright yellows + blacks
+        window.ConfettiSystem && window.ConfettiSystem.start({count:220,duration:3600});
+        // reveal next button after a short delay
+        setTimeout(()=> next1.style.display = 'inline-block', 900);
+        // small shake + glow
+        document.querySelector('.box').style.transition = 'transform .6s ease';
+        document.querySelector('.box').style.transform = 'scale(1.02)';
+        setTimeout(()=> document.querySelector('.box').style.transform = '', 700);
+      }
+
+      pull.addEventListener('click', openBox);
+      skip.addEventListener('click', function(){
+        openBox();
+        setTimeout(()=> next1.style.display = 'inline-block', 600);
+      });
+      next1.addEventListener('click', ()=> { window.goTo('stage2.html'); });
+
+      // keyboard shortcuts
+      document.addEventListener('keydown', (e)=>{ if(e.key==='o') openBox(); if(e.key==='n') window.goTo('stage2.html'); });
+    });
+  </script>
+</body>
+</html>
+

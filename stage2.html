@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stage 2 — Vibes (Uci)</title>
+  <link rel="stylesheet" href="spotify-gift/assets/css/style.css">
+  <script src="spotify-gift/assets/js/common.js" defer></script>
+<!-- improve Android chrome look & install feel -->
+<meta name="theme-color" content="#07102a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="spotify-gift/assets/monk.png"> <!-- optional: add a small favicon -->
+
+
+</head>
+<body>
+  <div class="container">
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:300px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <span class="step-pill">Step 2</span>
+          <h2 style="margin:0">Pick the vibe — for <span class="neon-name">Uci</span></h2>
+        </div>
+        <p class="muted">Tap the cards that feel like you. You can pick multiple.</p>
+
+        <div class="gen-grid" id="genres" style="margin-top:16px">
+          <div class="gen-card" data-genre="pop"><strong>Pop</strong><div class="muted">Bright & warm</div></div>
+          <div class="gen-card" data-genre="hiphop"><strong>Hip-Hop</strong><div class="muted">Groove & flow</div></div>
+          <div class="gen-card" data-genre="rock"><strong>Rock</strong><div class="muted">Bold & raw</div></div>
+          <div class="gen-card" data-genre="edm"><strong>EDM</strong><div class="muted">Party energy</div></div>
+          <div class="gen-card" data-genre="classical"><strong>Classical</strong><div class="muted">Calm & timeless</div></div>
+          <div class="gen-card" data-genre="surprise"><strong>Surprise</strong><div class="muted">Let me surprise you</div></div>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+          <button id="toPlayer" class="btn big" disabled>Next: Preview →</button>
+          <button id="confettiBtn" class="btn ghost">Celebrate ✨</button>
+        </div>
+      </div>
+
+      <div style="width:360px;min-width:240px">
+        <div style="padding:18px;border-radius:12px;background:var(--card);">
+          <h4 style="margin:0">Selected for Uci</h4>
+          <div id="selectedList" class="muted" style="margin-top:10px">None yet</div>
+          <p class="muted" style="margin-top:12px">Your picks will shape the playlist preview — choose freely!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const cards = Array.from(document.querySelectorAll('.gen-card'));
+      const sel = document.getElementById('selectedList');
+      const toPlayer = document.getElementById('toPlayer');
+      const confettiBtn = document.getElementById('confettiBtn');
+      let selected = [];
+
+      function updateUI(){
+        sel.textContent = selected.length ? selected.join(', ') : 'None yet';
+        toPlayer.disabled = selected.length === 0;
+      }
+
+      cards.forEach(card=>{
+        card.addEventListener('click', ()=>{
+          const g = card.dataset.genre;
+          if(g === 'surprise'){
+            selected = ['surprise'];
+            cards.forEach(c=> c.classList.toggle('active', c===card));
+          } else {
+            if(selected.includes(g)) selected = selected.filter(x=>x!==g);
+            else selected.push(g);
+            card.classList.toggle('active', selected.includes(g));
+            const surpriseCard = document.querySelector('[data-genre="surprise"]');
+            surpriseCard && surpriseCard.classList.remove('active');
+            selected = selected.filter(x=> x !== 'surprise');
+          }
+          // playful micro animation and emoji burst
+          card.style.transform = 'translateY(-8px) scale(1.03)';
+          setTimeout(()=> {card.style.transform='';}, 220);
+
+          // small emoji burst near card
+          const burst = document.createElement('div');
+          burst.textContent = '✨';
+          burst.style.position = 'absolute';
+          burst.style.left = (card.getBoundingClientRect().left + 10) + 'px';
+          burst.style.top = (card.getBoundingClientRect().top - 20) + 'px';
+          burst.style.fontSize = '20px';
+          burst.style.transition = 'transform .8s ease, opacity .8s';
+          document.body.appendChild(burst);
+          setTimeout(()=> { burst.style.transform='translateY(-40px) scale(1.2)'; burst.style.opacity='0'; }, 10);
+          setTimeout(()=> document.body.removeChild(burst), 900);
+
+          updateUI();
+        });
+      });
+
+      toPlayer.addEventListener('click', ()=> {
+        sessionStorage.setItem('sg_selected', JSON.stringify(selected));
+        window.goTo('stage3.html');
+      });
+
+      confettiBtn.addEventListener('click', ()=>{ window.ConfettiSystem.start({count:220,duration:3000}); });
+
+      document.addEventListener('keydown',(e)=>{ if(e.key==='g') { confettiBtn.click() }});
+      updateUI();
+    });
+  </script>
+</body>
+</html>
+

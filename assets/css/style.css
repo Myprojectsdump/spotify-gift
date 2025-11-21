@@ -1,0 +1,269 @@
+/* assets/css/style.css — All-yellow, glass container (full replacement) */
+
+/* Tokens */
+:root{
+  --bg-1:#07060a;
+  --yellow-1:#FFD400;   /* bright yellow */
+  --yellow-2:#FFE54D;   /* softer highlight */
+  --yellow-3:#FFCF33;   /* metallic tint */
+  --cream:#FFF8BF;
+  --dark:#050406;
+  --glass: rgba(255,255,255,0.03);
+  --muted: rgba(255,255,255,0.72);
+  --card: rgba(255,255,255,0.03);
+}
+
+/* Base resets */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto;background:
+  radial-gradient(800px 400px at 10% 10%, rgba(255,212,0,0.02), transparent),
+  linear-gradient(120deg,#07112a,#081026,#07102a); color:#fff}
+a{color:inherit}
+.center{text-align:center}
+.muted{color:var(--muted)}
+
+/* Animated background shift (glass feel) */
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body {
+  background-size: 300% 300%;
+  animation: bgShift 18s ease-in-out infinite;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Container: EXACTLY the polished card you pasted, adapted to yellow accents */
+.container {
+  /* visual card */
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 18px;
+  padding: 18px;
+   box-shadow:
+    0 20px 80px rgba(0,0,0,0.60),   /* big outer glow (same as final-card) */
+    inset 0 1px 0 rgba(255,255,255,0.02); /* soft glass highlight */
+
+  /* layout & centering (override inline styles so this applies site-wide) */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+
+  /* ensure the container fills the viewport and centers its children */
+  min-height: 100vh;
+  align-items: center !important;     /* overrides inline align-items */
+  justify-content: center !important; /* vertical centering */
+}
+
+
+/* Common UI */
+.btn{display:inline-block;padding:10px 16px;border-radius:12px;text-decoration:none;background:linear-gradient(90deg,var(--yellow-2),var(--yellow-1));color:#071;font-weight:800;box-shadow:0 10px 30px rgba(255,212,0,0.08)}
+.btn.ghost{background:transparent;border:2px solid rgba(255,255,255,0.06);color:#fff}
+.big{padding:14px 22px;font-size:18px;border-radius:14px}
+.step-pill{background:var(--card);padding:8px 12px;border-radius:999px;font-weight:700;color:var(--muted);display:inline-block}
+
+/* Hero */
+.hero{padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.subtle-note{font-size:14px;color:var(--muted)}
+
+/* Gift box */
+.box-scene{perspective:1400px;display:flex;align-items:center;justify-content:center}
+.box{
+  width:360px;height:260px;border-radius:18px;background:linear-gradient(180deg,#0c0b0f,#071018);
+  position:relative;box-shadow:0 30px 80px rgba(2,8,20,0.65);transform-style:preserve-3d;overflow:visible
+}
+.lid{
+  position:absolute;left:-8px;right:-8px;top:-72px;height:96px;border-radius:16px;
+  background:linear-gradient(90deg,var(--yellow-2),var(--yellow-1));transform-origin:50% 100%;backface-visibility:hidden;
+  z-index:5;display:flex;align-items:center;justify-content:center;font-size:46px;transition:transform 700ms cubic-bezier(.2,.9,.25,1),box-shadow .28s;
+  box-shadow:0 16px 40px rgba(0,0,0,0.5)
+}
+.lid.open{transform:rotateX(-86deg) translateY(-8px) translateZ(14px);box-shadow:0 40px 120px rgba(0,0,0,0.6)}
+.ribbon-vertical{position:absolute;left:50%;transform:translateX(-50%);top:0;height:100%;width:64px;background:linear-gradient(180deg,rgba(0,0,0,0.02),rgba(255,255,255,0.02));border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.04)}
+.ribbon-horiz{position:absolute;left:0;right:0;top:50%;height:36px;background:linear-gradient(90deg,var(--dark),var(--yellow-1));transform:translateY(-50%);border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+.box-body{height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:20px;position:relative}
+.box-body::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 40%;
+  height: 40%;
+  transform: translateX(-50%);
+  border-radius: 40%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 40%, rgba(255,212,0,0.20), rgba(255,212,0,0.08) 35%, transparent 60%);
+  opacity: 0;
+  transition: opacity 450ms ease;
+  z-index: 2;
+}
+.lid.open ~ .box-body::after,
+.box.open .box-body::after { opacity: 1; }
+
+/* Hover micro-interaction */
+.box:hover { transform: translateY(-6px) rotateX(0.5deg); transition: transform 220ms ease; }
+
+/* Genre cards */
+.gen-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.gen-card{padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);cursor:pointer;transition:transform .22s ease,box-shadow .22s;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.gen-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.5)}
+.gen-card.active{box-shadow:0 30px 80px rgba(255,212,0,0.12);border:2px solid rgba(255,212,0,0.12)}
+
+/* Album / Avatar: circular neon ring (the girl-friendly look) */
+.avatar {
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  overflow:hidden;
+  display:block;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  box-shadow:0 28px 80px rgba(0,0,0,0.55);
+  transition:transform .6s cubic-bezier(.2,.9,.25,1);
+}
+
+/* neon ring */
+.avatar::before {
+  content: '';
+  position:absolute;
+  left:-8px; top:-8px; right:-8px; bottom:-8px;
+  border-radius:50%;
+  background: radial-gradient(circle at 30% 20%, rgba(255,245,200,0.12), transparent 20%);
+  box-shadow: 0 6px 30px rgba(255,212,0,0.12), 0 0 28px rgba(255,212,0,0.08) inset;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* thin neon ring stroke */
+.avatar-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: calc(100% + 22px);
+  height: calc(100% + 22px);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(255,212,0,0.06), 0 6px 30px rgba(255,212,0,0.12);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* when playing/pulse */
+.avatar.playing { transform: scale(1.04) rotate(-2deg); }
+.avatar.playing::before { box-shadow: 0 10px 48px rgba(255,212,0,0.18), 0 0 88px rgba(255,212,0,0.08) inset; }
+
+ /* spectrum */
+.spectrum{display:flex;gap:6px;align-items:end;height:64px;margin-top:8px}
+.spectrum > div{width:10px;background:linear-gradient(180deg,var(--yellow-1),#fff);border-radius:6px;transform-origin:bottom;transition:height 120ms linear}
+
+/* final reveal card */
+.final-card{padding:28px;border-radius:16px;background:linear-gradient(90deg,#131212,#100b06);box-shadow:0 20px 80px rgba(0,0,0,0.6);font-size:20px;max-width:680px;margin:0 auto;color:#fff;text-align:center;border:2px solid rgba(255,212,0,0.06)}
+
+/* neon name badge */
+.neon-name{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--yellow-2),var(--yellow-1));color:#071;font-weight:900;box-shadow:0 10px 40px rgba(255,212,0,0.12)}
+
+/* polished button tweaks */
+.btn.big { box-shadow: 0 18px 48px rgba(255,212,0,0.12); color: #071; }
+.btn.big:active { transform: translateY(2px) scale(.998); }
+
+/* small helpers */
+.muted{color:var(--muted)}
+.center{align-items:center;display:flex;justify-content:center;flex-direction:column}
+.card{padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);}
+
+/* responsive */
+@media (max-width:900px){
+  .controls{padding-left:0;min-width:unset}
+  .box{width:92%}
+  .avatar{width:110px;height:110px}
+  .btn.big{width:100%}
+}
+
+/* ============================
+   Mobile / Android friendly tweaks
+   Appended for better mobile UX
+   ============================ */
+
+/* Improve touch targets & reduce visual density on mobile */
+:root {
+  --mobile-gap: 12px;
+  --mobile-padding: 18px;
+  --mobile-btn-height: 48px; /* recommended minimum touch size */
+}
+
+/* Prefer column layout on narrow screens and avoid huge vertical centering */
+@media (max-width: 900px) {
+  /* Container: don't force full-screen centering on small screens */
+  .container {
+    min-height: auto;               /* allow natural document flow */
+    padding: var(--mobile-padding);
+    gap: var(--mobile-gap);
+    align-items: stretch !important; /* allow children to be full width */
+    justify-content: flex-start !important; /* flow from top like a normal page */
+  }
+
+  /* Make .final-card and other cards responsive width */
+  .final-card,
+  .card {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 18px;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.55); /* keep depth but slightly smaller on mobile */
+  }
+
+  /* Buttons: full-width stacked when space is tight, larger tap area */
+  .btn {
+    min-height: var(--mobile-btn-height);
+    padding: 12px 16px;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .btn.big { padding: 14px 18px; font-size: 17px; }
+  .btn.full { display:block; width:100%; }
+
+  /* When buttons are side-by-side, stack on narrow viewports */
+  .final-card > div[style*="display:flex"],
+  .controls > div[style*="display:flex"] {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .final-card > div[style*="display:flex"] .btn,
+  .controls > div[style*="display:flex"] .btn {
+    flex: 1 1 100%;
+  }
+
+  /* Box / gift: shrink fluidly */
+  .box { width: 100%; max-width: 420px; height: auto; aspect-ratio: 16/10; min-height: 200px; }
+  .box-body { font-size: 18px; padding: 12px; }
+
+  /* Avatar & badges: scale down */
+  .avatar { width: 110px; height: 110px; }
+  .neon-name { padding: 6px 8px; font-size: 14px; }
+
+  /* Reduce heavy shadows/animations on low-power devices */
+  .box, .final-card, .container { will-change: auto; }
+}
+
+/* Respect user's reduce-motion preference (important for mobile battery & comfort) */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* Improve tap responsiveness on Android (remove blue highlight & make taps feel snappy) */
+button, a {
+  -webkit-tap-highlight-color: rgba(255,255,255,0.06);
+  touch-action: manipulation;
+  outline: none;
+}
+
+/* Slightly increase font-size for readability on small screens */
+@media (max-width:420px) {
+  html { font-size: 15px; } /* base font-size bump */
+  .final-card { padding: 16px; }
+  .neon-name { font-size: 13px; }
+  .muted { font-size: 13px; }
+}
+
