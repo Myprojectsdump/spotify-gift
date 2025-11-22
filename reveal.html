@@ -46,7 +46,7 @@
 
       <p style="font-size:20px;margin:10px 0 18px"><strong>Check Telegram for the details</strong></p>
       <p class="muted">I will privately DM the login details on Telegram. Keep the account safe.</p>
-     <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
   <a class="btn big" id="done" href="index.html">Done</a>
   <button id="replay" class="btn ghost">Celebrate again</button>
   <button id="musicToggle" class="btn ghost">Pause music ⏸</button>
@@ -56,15 +56,76 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function(){
-      // welcome confetti for Uci: bright yellow + black bits
-      window.ConfettiSystem.start({count:360,duration:4200});
-      document.getElementById('replay').addEventListener('click', ()=> window.ConfettiSystem.start({count:220,duration:3000}));
-    });
-  </script>
+  document.addEventListener('DOMContentLoaded', function(){
+    // 🎉 Confetti behavior (kept same)
+    window.ConfettiSystem.start({count:360, duration:4200});
+    const replayBtn = document.getElementById('replay');
+    replayBtn.addEventListener('click', ()=> window.ConfettiSystem.start({count:220, duration:3000}));
+
+    const musicToggle = document.getElementById('musicToggle');
+    const doneLink = document.getElementById('done');
+
+    // 🎧 Restore audio from sessionStorage
+    const savedSrc = sessionStorage.getItem('sg_audio_src');
+    const savedTime = parseFloat(sessionStorage.getItem('sg_audio_time') || '0');
+    const wasPlaying = sessionStorage.getItem('sg_audio_was_playing') === 'true';
+
+    let audio = null;
+
+    if(savedSrc){
+      audio = new Audio(savedSrc);
+      audio.loop = true;
+      audio.volume = 0.8;
+
+      if(!isNaN(savedTime) && savedTime > 0){
+        // small try/catch in case browser doesn't like setting too early
+        try { audio.currentTime = savedTime; } catch(e){}
+      }
+
+      audio.addEventListener('play', ()=> {
+        if(musicToggle) musicToggle.textContent = 'Pause music ⏸';
+      });
+      audio.addEventListener('pause', ()=> {
+        if(musicToggle) musicToggle.textContent = 'Play music ▶';
+      });
+
+      if(wasPlaying){
+        audio.play().catch(err => {
+          console.warn('Autoplay blocked:', err);
+          if(musicToggle) musicToggle.textContent = 'Play music ▶';
+        });
+      } else {
+        if(musicToggle) musicToggle.textContent = 'Play music ▶';
+      }
+    } else {
+      if(musicToggle) musicToggle.textContent = 'Play music ▶';
+    }
+
+    if(musicToggle){
+      musicToggle.addEventListener('click', ()=> {
+        if(!audio){
+          // nothing was saved – optional: you could create a default track here
+          alert('Music is not loaded from the previous step.');
+          return;
+        }
+        if(audio.paused){
+          audio.play().catch(err => console.warn('Play error:', err));
+        } else {
+          audio.pause();
+        }
+      });
+    }
+
+    if(doneLink){
+      doneLink.addEventListener('click', ()=> {
+        if(audio) audio.pause();
+        sessionStorage.removeItem('sg_audio_src');
+        sessionStorage.removeItem('sg_audio_time');
+        sessionStorage.removeItem('sg_audio_was_playing');
+      });
+    }
+  });
+</script>
+
 </body>
 </html>
-
-
-
-
